@@ -16,7 +16,7 @@ const CoinInfo = ({ coin }) => {
   const [historicData, setHistoricData] = useState();
   const [days, setDays] = useState(1);
   const { currency } = CryptoState();
-  const [flag,setflag] = useState(false);
+  const [flag, setflag] = useState(false);
 
   const useStyles = makeStyles((theme) => ({
     container: {
@@ -63,7 +63,7 @@ const CoinInfo = ({ coin }) => {
   return (
     <ThemeProvider theme={darkTheme}>
       <div className={classes.container}>
-        {!historicData | flag===false ? (
+        {!historicData | (flag === false) ? (
           <CircularProgress
             style={{ color: "gold" }}
             size={250}
@@ -86,7 +86,7 @@ const CoinInfo = ({ coin }) => {
                   {
                     data: historicData.map((coin) => coin[1]),
                     label: `Price ( Past ${days} Days ) in ${currency}`,
-                    borderColor: "#EEBC1D",
+                    borderColor: "#FF0000",
                   },
                 ],
               }}
@@ -109,7 +109,8 @@ const CoinInfo = ({ coin }) => {
               {chartDays.map((day) => (
                 <SelectButton
                   key={day.value}
-                  onClick={() => {setDays(day.value);
+                  onClick={() => {
+                    setDays(day.value);
                     setflag(false);
                   }}
                   selected={day.value === days}
@@ -117,6 +118,37 @@ const CoinInfo = ({ coin }) => {
                   {day.label}
                 </SelectButton>
               ))}
+            </div>
+            <div className="col-sm-9" style={{ marginLeft: "70px" }}>
+              <table className="table table-bordered table-striped">
+                <thead className="thead-dark">
+                  <tr>
+                    <th className="text-center" style={{ width: "150px" }}>
+                      Day
+                    </th>
+                    <th className="text-center" style={{ width: "350px" }}>
+                      Price
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {historicData.map((coin) => {
+                    let date = new Date(coin[0]);
+                    let time =
+                      date.getHours() > 12
+                        ? `${date.getHours() - 12}:${date.getMinutes()} PM`
+                        : `${date.getHours()}:${date.getMinutes()} AM`;
+                    return (
+                      <tr>
+                        <td style={{ width: "200px" }}>
+                          {days === 1 ? time : date.toLocaleDateString()}
+                        </td>
+                        <td style={{ width: "350px" }}>{coin[1]}</td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
             </div>
           </>
         )}
